@@ -11,31 +11,30 @@ type TUser = {
 
 let users: TUser[] = []
 
-fs.readFile(filename, "utf8", (err: NodeJS.ErrnoException | null, data: string) => {
-    if (err) {
-        if (err.code=='ENOENT'){
-            writeUsersToFile()
-        } else{
-            console.error(err)
-        }
-        return
-    }
+async function readUsersFromFile() {
     try {
-        users = JSON.parse(data)
-        return
-    } catch (error: any) {
-        console.error(`Error parsing JSON: ${error}`)
-        return
+        const data = await fs.promises.readFile(filename, "utf8");
+        users = JSON.parse(data);
+    } catch (err: any) {
+        if (err.code === 'ENOENT') {
+            await writeUsersToFile();
+        } else {
+            console.error(err);
+        }
     }
-})
-
-function writeUsersToFile() {
-    fs.writeFile(filename, JSON.stringify(users), (err) => {
-        console.error(err)
-    })
 }
 
-router.post("/add", (req: Request, res: Response) => {
+
+async function writeUsersToFile() {
+    try {
+        await fs.promises.writeFile(filename, JSON.stringify(users));
+    } catch (err) {
+        console.error(err);
+    }
+}
+
+router.post("/add", async (req: Request, res: Response) => {
+    await readUsersFromFile()
     let added_user:string
     try{
         added_user = req.body.name
@@ -55,67 +54,63 @@ router.post("/add", (req: Request, res: Response) => {
         return
     }
     let found = false
-    users.forEach( function(user) {
-        if (user.name===added_user){
-            found = true
-            try{
-                user.todos.push(todo)
-                writeUsersToFile()
-            }
-            catch (err){
-                console.error(`Error while trying to add todo to existing user: ${err}`)
-                return
+    for (const user of users) {
+        if (user.name === added_user) {
+            found = true;
+            try {
+                user.todos.push(todo);
+                await writeUsersToFile();
+            } catch (err) {
+                console.error(`Error while trying to add todo to existing user: ${err}`);
+                res.status(500).json({ message: "Internal server error" });
+                return;
             }
         }
-    })
+    }
+    
     if (!found){
         let new_user: TUser = {
             name: added_user,
             todos: [todo]
         }
         users.push(new_user)
-        writeUsersToFile()
+        await writeUsersToFile()
     }
     res.json(`Todo added successfully for user ${added_user}.`)
 })
 
-router.get("/todos/:id", (req: Request, res: Response) => {
-    let found = false
-    users.forEach( function(user){
-        if (user.name==req.params.id){
-            found = true
-            res.json({todos:user.todos})
-        }
-    })
-    if (!found){
-        let names:string="";
-        users.forEach(function(user){
-            names+=user.name
-        })
+router.get("/todos/:id", async (req: Request, res: Response) => {
+    await readUsersFromFile()
+    const user = users.find((user) => user.name === req.params.id);
+    if (user) {
+        res.json({ todos: user.todos });
+    } else {
         res.json({message:"User not found"})
     }
 })
 
-router.delete("/delete", (req: Request, res: Response) =>{
+router.delete("/delete", async (req: Request, res: Response) =>{
     let username=req.body.username
+    await readUsersFromFile()
     const index = users.findIndex((user) => user.name==username)
     if (index==-1){
         res.json({message:"User not found"})
     } else {
         users.splice(index)
-        writeUsersToFile()
+        await writeUsersToFile()
         res.json({message: "User deleted successfully."})
     }
 })
 
-router.put("/update", (req: Request, res: Response)=>{
+router.put("/update", async (req: Request, res: Response)=>{
+    await readUsersFromFile()
     try{
         let username=req.body.name
         let todoname=req.body.todo
         const userIndex = users.findIndex((user) => user.name==username)
         const todoIndex = users[userIndex].todos.findIndex((todo) => todo==todoname)
         users[userIndex].todos.splice(todoIndex)
-        writeUsersToFile()
+        await writeUsersToFile()
         res.json({message:"Todo deleted successfully."})
     } catch (err) {
         console.log(`Error during update: ${err}`)
