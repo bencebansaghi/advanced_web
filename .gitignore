@@ -131,3 +131,6 @@ dist
 
 # Zips are only for submitting the course work
 *.zip
+
+# bruno
+*/test
