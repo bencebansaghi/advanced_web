@@ -9,7 +9,7 @@ type TUser = {
 }
 let users: TUser[] = []
 
-fs.readFile("data/users.json", "utf8", (err: NodeJS.ErrnoException | null, data: string) => {
+/*fs.readFile("data/users.json", "utf8", (err: NodeJS.ErrnoException | null, data: string) => {
     if (err) {
         console.error(err)
         return
@@ -21,7 +21,7 @@ fs.readFile("data/users.json", "utf8", (err: NodeJS.ErrnoException | null, data:
         console.error(`Error parsing JSON: ${error}`)
         return
     }
-})
+})*/
 
 function writeUsersToFile() {
     fs.writeFile("data/users.json", JSON.stringify(users), (err) => {
@@ -39,22 +39,22 @@ router.post("/users", (req: Request, res: Response) => {
     }
     catch{
         console.error('Request not in the right format')
-        res.json("Request not in the right format")
+        res.json({message: "Request not in the right format"})
         return
     }
     if (users === null || users instanceof Error) {
         console.error('Error while fetching users')
-        res.json("Error while fetching users")
+        res.json({message: "Error while fetching users"})
         return
     }
     else {
         users.push(user)
         try {
-            writeUsersToFile()
-            res.json("User successfully added")
+            //writeUsersToFile()
+            res.json({message:"User successfully added"})
         }
         catch {
-            res.json("Error while adding users")
+            res.json({message: "Error while adding users"})
             console.error("Error while adding users")
         }
     }
@@ -62,8 +62,7 @@ router.post("/users", (req: Request, res: Response) => {
 })
 
 router.get("/users", (req: Request, res: Response) => {
-    res.status(201)
-    res.json(users)
+    res.status(201).json({users:users})
 })
 
 router.get("/echo/:id", (req: Request, res: Response) => {
