@@ -2,6 +2,7 @@ import mongoose, { Document, Schema } from 'mongoose';
 
 interface ITodo {
     todo: string;
+    checked: boolean;
 }
 
 interface IUser extends Document {
@@ -10,7 +11,8 @@ interface IUser extends Document {
 }
 
 const TodoSchema: Schema = new Schema({
-    todo: { type: String, required: true }
+    todo: { type: String, required: true },
+    checked: { type: Boolean, default: false}
 });
 
 const UserSchema: Schema = new Schema({
@@ -18,6 +20,7 @@ const UserSchema: Schema = new Schema({
     todos: { type: [TodoSchema], required: true }
 });
 
+const Todo = mongoose.model<ITodo>('Todo', TodoSchema)
 const User = mongoose.model<IUser>('User', UserSchema);
 
-export { ITodo, IUser, User };
+export { ITodo, IUser, Todo, User };

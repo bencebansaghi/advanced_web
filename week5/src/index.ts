@@ -1,5 +1,5 @@
 import {Request, Response, Router} from "express"
-import { ITodo, IUser, User } from './models/User'
+import { ITodo, IUser, Todo, User } from './models/User'
 
 const router: Router = Router()
 
@@ -12,9 +12,9 @@ router.post("/add", async (req: Request, res: Response) => {
     let new_todo: ITodo | null
     try{
         existing_user = await getUser(req.body.name)
-        new_todo = {
+        new_todo= new Todo({
             todo: req.body.todo
-        }
+        })
     } catch {
         console.log('Name or todo not in req')
         return
@@ -35,8 +35,7 @@ router.post("/add", async (req: Request, res: Response) => {
 router.get("/todos/:id", async (req: Request, res: Response) => {
     const existing_user = await getUser(req.params.id);
     if (existing_user) {
-        const todoList: string[] = existing_user.todos.map(todo => todo.todo)
-        res.json({ todos: todoList });
+        res.json({ todos: existing_user.todos });
     } else {
         res.json({message:"User not found"})
     }
@@ -58,6 +57,26 @@ router.put("/update", async (req: Request, res: Response)=>{
             existing_user.todos = existing_user.todos.filter((todo) => todo.todo !== req.body.todo)
             existing_user.save()
             res.json({message:"Todo deleted successfully."})
+        } catch {
+            console.log('Todo not found')
+        }
+    } else {
+        console.log(`Error during update`)
+        res.json({message:"Something went wrong."})
+    }
+})
+
+router.put("/updateTodo", async (req: Request, res: Response) =>{
+    const checked: boolean = req.body.checked
+    const existing_user = await getUser(req.body.name);
+    if (existing_user) {
+        try{
+            const modified_todo = existing_user.todos.filter((todo) => todo.todo === req.body.todo)[0]
+            modified_todo.checked=checked
+            existing_user.todos = existing_user.todos.filter((todo) => todo.todo !== req.body.todo)
+            existing_user.todos.push(modified_todo)
+            existing_user.save()
+            res.json({message:"Check changes."})
         } catch {
             console.log('Todo not found')
         }

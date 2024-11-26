@@ -58,7 +58,7 @@ document.addEventListener('DOMContentLoaded', () => {
             let li=document.createElement('li');
             let a=document.createElement('a');
             a.className="delete-task";
-            a.textContent=(data.todos[i]);
+            a.textContent=(data.todos[i].todo);
             a.addEventListener('click', async function (event) {
                 event.preventDefault();
                 const response = await fetch("/update", {
@@ -66,13 +66,30 @@ document.addEventListener('DOMContentLoaded', () => {
                     headers: {"Content-type": "application/json"},
                     body: JSON.stringify({
                         name: inputUsername,
-                        todo: data.todos[i]
+                        todo: data.todos[i].todo
                     })
                 });
                 const todoData = await response.json()
                 todoList.innerHTML=todoData.message;
             });
             li.appendChild(a);
+            let box = document.createElement('input');
+            box.type = 'checkbox';
+            box.checked=data.todos[i].checked
+            box.addEventListener('change', async function (event) {
+                const response = await fetch("/updateTodo", {
+                    method: "put",
+                    headers: {"Content-type": "application/json"},
+                    body: JSON.stringify({
+                        name: inputUsername,
+                        todo: data.todos[i].todo,
+                        checked: event.target.checked
+                    })
+                });
+                const todoData = await response.json();
+                console.log(todoData)
+            });
+            li.appendChild(box);
             todoList.appendChild(li);
         };
         addDeleteField(inputUsername)
