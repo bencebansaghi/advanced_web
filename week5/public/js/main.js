@@ -56,6 +56,8 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         for(let i=0;i<data.todos.length;i++){
             let li=document.createElement('li');
+            let label=document.createElement('label');
+            let span=document.createElement('span');
             let a=document.createElement('a');
             a.className="delete-task";
             a.textContent=(data.todos[i].todo);
@@ -72,10 +74,12 @@ document.addEventListener('DOMContentLoaded', () => {
                 const todoData = await response.json()
                 todoList.innerHTML=todoData.message;
             });
-            li.appendChild(a);
+            span.appendChild(a);
             let box = document.createElement('input');
             box.type = 'checkbox';
             box.checked=data.todos[i].checked
+            box.id='myCheckbox'
+            box.className='checkBoxes'
             box.addEventListener('change', async function (event) {
                 const response = await fetch("/updateTodo", {
                     method: "put",
@@ -89,7 +93,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 const todoData = await response.json();
                 console.log(todoData)
             });
-            li.appendChild(box);
+            label.appendChild(box)
+            label.appendChild(span)
+            li.appendChild(label)
             todoList.appendChild(li);
         };
         addDeleteField(inputUsername)

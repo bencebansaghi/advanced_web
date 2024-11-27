@@ -4,18 +4,37 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>My Web App</title>
+    <!-- Compiled and minified CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+
+    <!-- Compiled and minified JavaScript -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
     <script src="js/main.js"></script>
 </head>
 <body>
-    <form id="todoForm">
-        <input id="userInput" type="text">
-        <input id="todoInput" type="text">
-        <button type="submit" id="submit-data" class="submit-data">Submit Data</button>
-    </form>
-    <form id="searchForm">
-        <input id="searchInput" type="text">
-        <button id="search" type="submit" class="search">Search</button>
-        <ul id="todoList"></ul>
-    </form>
+    <nav>
+        <div class="nav-wrapper">
+          <a href="#" class="brand-logo">Logo</a>
+          <ul id="nav-mobile" class="right hide-on-med-and-down">
+            <li><a href="index.html">Index</a></li>
+          </ul>
+        </div>
+      </nav>
+    <div class="container">
+        <div class="col">
+            <form id="todoForm">
+                <input id="userInput" type="text" placeholder="Enter your name">
+                <input id="todoInput" type="text" placeholder="Enter a todo">
+                <button type="submit" id="submit-data" class="btn">Submit Data</button>
+            </form>
+        </div>
+        <div class="col">
+            <form id="searchForm">
+                <input id="searchInput" type="text">
+                <button id="search" type="submit" class="btn">Search</button>
+                <ul id="todoList"></ul>
+            </form>
+        </div>
+    </div>
 </body>
 </html>

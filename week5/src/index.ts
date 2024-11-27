@@ -71,11 +71,13 @@ router.put("/updateTodo", async (req: Request, res: Response) =>{
     const existing_user = await getUser(req.body.name);
     if (existing_user) {
         try{
-            const modified_todo = existing_user.todos.filter((todo) => todo.todo === req.body.todo)[0]
-            modified_todo.checked=checked
-            existing_user.todos = existing_user.todos.filter((todo) => todo.todo !== req.body.todo)
-            existing_user.todos.push(modified_todo)
-            existing_user.save()
+            existing_user.todos = existing_user.todos.map((todo) => {
+                if (todo.todo === req.body.todo) {
+                    todo.checked = checked;
+                }
+                return todo;
+            });
+            await existing_user.save()
             res.json({message:"Check changes."})
         } catch {
             console.log('Todo not found')
