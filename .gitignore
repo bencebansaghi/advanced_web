@@ -134,3 +134,12 @@ dist
 
 # bruno
 */test
+
+# Image files
+*.png
+*.jpg
+*.jpeg
+*.gif
+*.webp
+*.tiff
+*.bmp
