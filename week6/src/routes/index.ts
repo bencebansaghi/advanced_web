@@ -51,8 +51,7 @@ router.get("/offers", async (req: Request, res: Response) => {
 
         offersWithImagePath.push(fullOffer)
     }
-
-    res.json({message:offersWithImagePath})
+    res.json(offersWithImagePath)
 })
 
 export default router

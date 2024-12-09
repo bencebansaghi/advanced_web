@@ -39,7 +39,7 @@ async function loadOffers() {
             throw new Error(response.statusText);
         }
         const data = await response.json();
-        const offers = data.message;
+        const offers = data;
         console.log(offers);
         for (let i = 0; i < offers.length; i++) {
             const offerDiv = document.createElement("div");
