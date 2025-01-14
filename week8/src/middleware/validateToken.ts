@@ -28,12 +28,7 @@ export const validateUser = (req: CustomRequest, res: Response, next: NextFuncti
 }
 
 export const validateAdmin = async (req: CustomRequest, res: Response, next: NextFunction): Promise<void> => {
-    const topic = await Topic.findById(req.params.id);
-    let topicUsername: String = '';
-    if (topic) {
-        topicUsername = topic.username;
-    }
-    if (await req.user?.isAdmin || req.user?.username == topicUsername) {
+    if (req.user?.isAdmin) {
         next();
     } else {
         res.status(403).json({ message: "Access denied." });

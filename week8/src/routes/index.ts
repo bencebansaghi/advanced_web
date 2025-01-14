@@ -102,4 +102,8 @@ router.delete("/api/topic/:id",
   }
 )
 
+router.post("/api/validate-token", validateUser, (req: CustomRequest, res: Response) => {
+  res.status(200).json({ valid: true });
+});
+
 export default router;

@@ -1,7 +1,47 @@
 document.addEventListener("DOMContentLoaded", function () {
     const loginForm = document.getElementById("loginForm");
-    const topicForm = document.getElementById("topicForm");
     const topicsDiv = document.getElementById("topics");
+    const topicForm = document.getElementById("topicForm");
+
+    function loadTopicForm() {
+        const titleInputDiv = document.createElement("div");
+        titleInputDiv.className = "input-field";
+        const titleInput = document.createElement("input");
+        titleInput.type = "text";
+        titleInput.id = "topicTitle";
+        titleInput.placeholder = "Topic Title";
+        titleInput.required = true;
+        titleInputDiv.appendChild(titleInput);
+
+        const contentInputDiv = document.createElement("div");
+        contentInputDiv.className = "input-field";
+        const contentTextarea = document.createElement("textarea");
+        contentTextarea.id = "topicText";
+        contentTextarea.className = "materialize-textarea";
+        contentTextarea.placeholder = "Topic Content";
+        contentTextarea.required = true;
+        contentInputDiv.appendChild(contentTextarea);
+
+        const postButton = document.createElement("button");
+        postButton.id = "postTopic";
+        postButton.className = "btn waves-effect waves-light";
+        postButton.textContent = "Post Topic";
+
+        topicForm.appendChild(titleInputDiv);
+        topicForm.appendChild(contentInputDiv);
+        topicForm.appendChild(postButton);
+    }
+
+    async function validateToken(token) {
+        const response = await fetch("/api/validate-token", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${token}`
+            }
+        });
+        return response.ok;
+    }
 
     loginForm.addEventListener("submit", async function (event) {
         event.preventDefault();
@@ -19,34 +59,47 @@ document.addEventListener("DOMContentLoaded", function () {
         const result = await response.json();
         if (response.ok) {
             localStorage.setItem("token", result.token);
-            topicForm.style.display = "block";
-            fetchTopics();
+            if (await validateToken(result.token)) {
+                topicForm.style.display = "block";
+                loadTopicForm();
+                fetchTopics();
+            } else {
+                alert("Invalid token");
+            }
         } else {
             const message = Array.isArray(result.message) ? result.message[0].msg : result.message;
             alert(message);
         }
     });
 
-    document.getElementById("postTopic").addEventListener("click", async function () {
-        const title = document.getElementById("topicTitle").value;
-        const content = document.getElementById("topicText").value;
-        const token = localStorage.getItem("token");
+    document.addEventListener("click", function (event) {
+        if (event.target && event.target.id === "postTopic") {
+            (async function () {
+                const title = document.getElementById("topicTitle").value;
+                const content = document.getElementById("topicText").value;
+                const token = localStorage.getItem("token");
 
-        const response = await fetch("/api/topic", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                "Authorization": `Bearer ${token}`
-            },
-            body: JSON.stringify({ title, content })
-        });
+                if (await validateToken(token)) {
+                    const response = await fetch("/api/topic", {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json",
+                            "Authorization": `Bearer ${token}`
+                        },
+                        body: JSON.stringify({ title, content })
+                    });
 
-        const result = await response.json();
-        if (response.ok) {
-            fetchTopics();
-        } else {
-            const message = Array.isArray(result.message) ? result.message[0].msg : result.message;
-            alert(message);
+                    const result = await response.json();
+                    if (response.ok) {
+                        fetchTopics();
+                    } else {
+                        const message = Array.isArray(result.message) ? result.message[0].msg : result.message;
+                        alert(message);
+                    }
+                } else {
+                    alert("Invalid token");
+                }
+            })();
         }
     });
 
@@ -82,19 +135,23 @@ document.addEventListener("DOMContentLoaded", function () {
             deleteButton.id = "deleteTopic";
             deleteButton.addEventListener("click", async function () {
                 const token = localStorage.getItem("token");
-                const response = await fetch(`/api/topic/${topic._id}`, {
-                    method: "DELETE",
-                    headers: {
-                        "Authorization": `Bearer ${token}`
-                    }
-                });
+                if (await validateToken(token)) {
+                    const response = await fetch(`/api/topic/${topic._id}`, {
+                        method: "DELETE",
+                        headers: {
+                            "Authorization": `Bearer ${token}`
+                        }
+                    });
 
-                const result = await response.json();
-                if (response.ok) {
-                    fetchTopics();
+                    const result = await response.json();
+                    if (response.ok) {
+                        fetchTopics();
+                    } else {
+                        const message = Array.isArray(result.message) ? result.message[0].msg : result.message;
+                        alert(message);
+                    }
                 } else {
-                    const message = Array.isArray(result.message) ? result.message[0].msg : result.message;
-                    alert(message);
+                    alert("Invalid token");
                 }
             });
 
@@ -108,8 +165,12 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     }
 
-    if (localStorage.getItem("token")) {
-        topicForm.style.display = "block";
-        fetchTopics();
-    }
+    (async function () {
+        const token = localStorage.getItem("token");
+        if (token && await validateToken(token)) {
+            topicForm.style.display = "block";
+            loadTopicForm();
+            fetchTopics();
+        }
+    })();
 });
