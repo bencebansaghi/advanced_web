@@ -17,6 +17,7 @@ function MyContainer() {
         const id: number = Math.floor(Math.random() * 1000000 + 1000)
         const newItem: TItem = {id:`${id}`,text:text, clicked:false}
         setItems([...items,newItem])
+        setTextArea("")
     }
     
     const setItemClicked = (id: string) => {

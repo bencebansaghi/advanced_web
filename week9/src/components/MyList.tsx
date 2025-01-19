@@ -20,7 +20,7 @@ const MyList: React.FC<ListProps> = ({header, items, updateList: updateList}) =>
                     <li 
                         key={item.id} 
                         onClick={() => updateList(item.id)} 
-                        style={{ textDecoration: item.clicked ? 'line-through' : 'none' }}
+                        {...(item.clicked && { style: { textDecoration: 'line-through' } })}
                     >
                         {item.text}
                     </li>
