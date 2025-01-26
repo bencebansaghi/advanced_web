@@ -8,16 +8,12 @@ type TItem = {
 }
 
 function MyContainer() {
-    const [items, setItems] = useState<TItem[]>([
-        { id: "1", text: "this is first task", clicked: false },
-        { id: "2", text: "this is second task", clicked: false }
-    ])
+    const [items, setItems] = useState<TItem[]>([])
     const [textArea, setTextArea] = useState("")
     const addItem = (text:string) => {
         const id: number = Math.floor(Math.random() * 1000000 + 1000)
         const newItem: TItem = {id:`${id}`,text:text, clicked:false}
         setItems([...items,newItem])
-        setTextArea("")
     }
     
     const setItemClicked = (id: string) => {
