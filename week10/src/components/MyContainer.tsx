@@ -4,7 +4,7 @@ const MyContainer = () => {
   const { t } = useTranslation();
   return (
     <>
-        <h2>{t("Front intro")}</h2>
+        <h2>{t("This is the front page")}</h2>
     </>
   )
 }

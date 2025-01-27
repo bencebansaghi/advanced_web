@@ -7,14 +7,28 @@ function App() {
   return (
     <>
       <BrowserRouter>
-      <Header />
         <Routes>
-          <Route path="/" element= {<MyContainer />} />
-          <Route path="/about" element={<About />} />
+          <Route
+            path="/"
+            element={
+              <>
+                <Header /> <MyContainer />
+              </>
+            }
+          />
+          <Route
+            path="/about"
+            element={
+              <>
+                <Header />
+                <About />
+              </>
+            }
+          />
         </Routes>
       </BrowserRouter>
     </>
-  )
+  );
 }
 
 export default App

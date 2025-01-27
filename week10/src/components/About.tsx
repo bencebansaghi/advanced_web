@@ -25,13 +25,13 @@ const About = () => {
         loadPosts();
     }, [amountLoaded]);
 
-    const loadMorePosts = () => {
+    const addMore = () => {
         setAmountLoaded(prevAmount => prevAmount + 12);
     };
 
     return (
         <div>
-            <h2>About</h2>
+            <h1>About</h1>
             <div className="grid-container">
                 {posts.map(post => (
                     <div key={post.id} className="grid-item">
@@ -39,7 +39,7 @@ const About = () => {
                         <p>{post.body}</p>
                     </div>
                 ))}
-            <button onClick={loadMorePosts}>Show More</button>
+            <button onClick={addMore}>Show More</button>
             </div>
         </div>
     );
