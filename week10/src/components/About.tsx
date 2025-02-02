@@ -14,7 +14,7 @@ const About = () => {
     useEffect(() => {
         const loadPosts = async () => {
             try {
-                const response = await fetch(`https://jsonplaceholder.typicode.com/posts?_start=0&_limit=${amountLoaded}`);
+                const response = await fetch("https://jsonplaceholder.typicode.com/posts");
                 const data = await response.json();
                 setPosts(data);
             } catch (error) {
@@ -23,24 +23,24 @@ const About = () => {
         };
 
         loadPosts();
-    }, [amountLoaded]);
+    }, []);
 
     const addMore = () => {
-        setAmountLoaded(prevAmount => prevAmount + 12);
+        setAmountLoaded((prev) => prev + 12);
     };
 
     return (
         <div>
             <h1>About</h1>
             <div className="grid-container">
-                {posts.map(post => (
+                {posts.slice(0, amountLoaded).map((post) => (
                     <div key={post.id} className="grid-item">
                         <h3>{post.title}</h3>
                         <p>{post.body}</p>
                     </div>
                 ))}
-            <button onClick={addMore}>Show More</button>
             </div>
+            <button onClick={addMore}>Show More</button>
         </div>
     );
 };

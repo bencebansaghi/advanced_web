@@ -3,6 +3,8 @@ import MyContainer from './components/MyContainer'
 import About from './components/About'
 import Header from './components/Header'
 
+import "./i18n"
+
 function App() {
   return (
     <>
