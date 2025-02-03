@@ -7,18 +7,16 @@ interface IJoke {
     id: number
   }
 
-  const useJokes = () => {
-    const [jokes, setJokes] = useState<IJoke[]>([])
+  export const useJokes = () => {
+    const [savedJokes, setJokes] = useState<IJoke[]>([])
 
-    function addNewJoke(joke:IJoke) {
-        setJokes([...jokes, joke])
+    function saveJoke(joke:IJoke) {
+        setJokes([...savedJokes, joke])
     }
 
     function deleteJoke(id:number) {
-      setJokes(jokes.filter(joke => joke.id !== id))
+      setJokes(savedJokes.filter(joke => joke.id !== id))
     }
 
-    return { jokes, addNewJoke, deleteJoke }
+    return { savedJokes, saveJoke, deleteJoke }
 }
-
-export default useJokes

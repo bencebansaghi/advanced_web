@@ -3,11 +3,11 @@ import './App.css'
 import ButtonAppBar from './components/Header'
 import Home from './components/FrontPage'
 import Saved from './components/SavedPage'
-import useJokes from './hooks/useJokes'
+import { useJokes } from './hooks/useJokes'
 
 
 function App() {
-  const { jokes, addNewJoke, deleteJoke } = useJokes()
+  const { savedJokes, saveJoke, deleteJoke } = useJokes()
 
 
   return (
@@ -19,14 +19,14 @@ function App() {
           path="/"
           element={
             <>
-              <Home saveJoke={addNewJoke} />
+              <Home saveJoke={saveJoke} />
             </>
           }
         />
         <Route
           path="/saved"
           element={
-            <Saved jokes={jokes} deleteJoke={deleteJoke} />
+            <Saved savedJokes={savedJokes} deleteJoke={deleteJoke} />
           }
         />
       </Routes>

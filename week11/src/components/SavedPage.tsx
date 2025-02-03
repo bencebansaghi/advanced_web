@@ -8,17 +8,17 @@ interface IJoke {
 }
 
 interface SavedProps {
-  jokes: IJoke[]
+  savedJokes: IJoke[]
   deleteJoke: (id: number) => void
 }
 
-const Saved: React.FC<SavedProps> = ({ jokes, deleteJoke }) => {
+const Saved: React.FC<SavedProps> = ({ savedJokes, deleteJoke }) => {
   return (
     <div>
-      {jokes.length === 0 ? (
+      {savedJokes.length === 0 ? (
         <p>No saved jokes yet.</p>
       ) : (
-        jokes.map(joke => (
+        savedJokes.map(joke => (
           <Card key={joke.id} sx={{ marginBottom: 2 }}>
             <CardContent>
               <Typography variant="h5">{joke.setup}</Typography>
