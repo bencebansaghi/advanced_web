@@ -33,14 +33,12 @@ function ShowBook() {
 
   if (!book) {
     return <div>
-        <h1>Books</h1>
         <h1>404: This is not the webpage you are looking for</h1>
     </div>;
   }
 
   return (
     <>
-    <h1>Books</h1>
     <div>
       <p>{book.name}</p>
       <p>Author: {book.author}</p>

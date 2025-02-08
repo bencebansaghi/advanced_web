@@ -32,7 +32,7 @@ function FrontPage() {
           <div>
             <label htmlFor="name">Book Name:</label>
             <input
-              type="text"
+              type="text" // input name string
               id="name"
               value={name}
               onChange={(e) => setName(e.target.value)}
@@ -42,7 +42,7 @@ function FrontPage() {
           <div>
             <label htmlFor="author">Author:</label>
             <input
-              type="text"
+              type="text" // input author string
               id="author"
               value={author}
               onChange={(e) => setAuthor(e.target.value)}
@@ -52,14 +52,14 @@ function FrontPage() {
           <div>
             <label htmlFor="pages">Pages:</label>
             <input
-              type="number"
+              type="number" // input pages number
               id="pages"
               value={pages}
               onChange={(e) => setPages(e.target.value)}
               required
             />
           </div>
-          <button type="submit">Submit</button>
+          <button id="submit" type="submit">Submit</button> // input submit submit
         </form>
       </div>
     );
